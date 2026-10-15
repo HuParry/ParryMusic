@@ -4,4 +4,6 @@ node_modules/
 # Keep local music, generated playlists and notes out of source control.
 /music/**
 !/music/.gitkeep
+# Keep ossutil out of source control.
 /upload-oss.sh
+/ossutil_output
