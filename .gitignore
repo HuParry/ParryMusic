@@ -1,0 +1,7 @@
+.DS_Store
+.idea/
+node_modules/
+# Keep local music, generated playlists and notes out of source control.
+/music/**
+!/music/.gitkeep
+/upload-oss.sh

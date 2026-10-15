@@ -1,0 +1,21 @@
+{
+  "name": "ParryMusic",
+  "short_name": "ParryMusic",
+  "theme_color": "#101820",
+  "background_color": "#101820",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./index.html",
+  "icons": [
+      {
+        "src": "img/icon-r_mini.webp",
+        "sizes": "256x256",
+        "type": "image/webp"
+      },
+      {
+        "src": "img/icon-r.webp",
+        "sizes": "512x512",
+        "type": "image/webp"
+      }
+    ]
+}

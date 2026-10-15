@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-app-state="loading">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="description" content="ParryMusic，一个属于你的静态音乐空间。">
+  <meta name="theme-color" content="#101820">
+  <title>ParryMusic - 用音乐，留住片刻。</title>
+  <style>
+    /* Keep the placeholder UI out of the first paint, even while CSS is loading. */
+    html { background: #1e2b33; }
+    html:not([data-app-state="ready"]) .app-shell { visibility: hidden; }
+    .startup-screen { position: fixed; inset: 0; z-index: 30; display: grid; place-content: center; gap: 12px; padding: 24px; background: #1e2b33; color: #b1bfca; text-align: center; font: 14px/1.8 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .startup-screen p { margin: 0; }
+    .startup-screen a { color: #b2dccb; }
+    .startup-error, html[data-app-state="error"] .startup-loading, html[data-app-state="ready"] .startup-screen { display: none; }
+    html[data-app-state="error"] .startup-error { display: block; }
+  </style>
+  <script>
+    (function () {
+      function failStartup(event) {
+        if (document.documentElement.dataset.appState !== "loading") return;
+        if (event.target === window || (event.target && event.target.tagName === "SCRIPT")) {
+          document.documentElement.dataset.appState = "error";
+        }
+      }
+      window.addEventListener("error", failStartup, true);
+      window.ParryMusicStartup = {
+        ready: function () {
+          document.documentElement.dataset.appState = "ready";
+          window.removeEventListener("error", failStartup, true);
+        }
+      };
+    })();
+  </script>
+  <link rel="icon" href="./img/favicon-circle.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="./img/apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./css/main.css">
+  <script defer src="./config.js"></script>
+  <script defer src="./music/playlist.js"></script>
+  <script defer src="./js/player-core.js"></script>
+  <script defer src="./js/player-progress.js"></script>
+  <script defer src="./js/main.js"></script>
+</head>
+<body>
+  <div class="startup-screen" role="status" aria-live="polite">
+    <p class="startup-loading">正在加载音乐…</p>
+    <div class="startup-error"><p>页面加载失败，请检查网络后重试。</p><a href="">重新加载</a></div>
+  </div>
+  <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5h3v14H7zm7 0h3v14h-3z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path d="M5 5v14M19 5 8 12l11 7Z"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M19 5v14M5 5l11 7-11 7Z"/></symbol>
+    <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3 5h3c5 0 7 14 12 14h3m-4-4 4 4-4 4M3 19h3c2 0 4-3 6-7m3-5c1-1 2-2 3-2h3m-4-4 4 4-4 4"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4m14-1v2a3 3 0 0 1-3 3H3"/></symbol>
+    <symbol id="i-order" viewBox="0 0 24 24"><path d="M3 6h10M3 12h10M3 18h7M18 4v16m-3-3 3 3 3-3"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-4m-6.8 7 6.8 4"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 4 6 8H3v8h3l5 4ZM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-muted" viewBox="0 0 24 24"><path d="M11 4 6 8H3v8h3l5 4Zm5 5 6 6m0-6-6 6"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 8a2.5 2.5 0 0 1 5 .5c0 2-2.5 2-2.5 4M12 16h.01"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  </svg>
+  <div class="ambient" aria-hidden="true">
+    <div id="ambient-tone-a" class="ambient-tone active"></div>
+    <div id="ambient-tone-b" class="ambient-tone"></div>
+    <img id="ambient-cover" src="./img/default-cover.svg" alt="">
+  </div>
+  <div class="app-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="ParryMusic 首页">
+        <img class="brand-mark" src="./img/icon-r_mini.webp" alt="" width="35" height="35">
+        <span id="site-title">ParryMusic</span>
+      </a>
+      <span id="site-subtitle" class="site-subtitle">用音乐，留住片刻。</span>
+      <button id="list-toggle" class="icon-button mobile-list-toggle" aria-label="打开播放列表" aria-expanded="false" aria-controls="parryMusic-page" title="播放列表"><svg class="icon"><use href="#i-list"/></svg></button>
+      <button id="help-button" class="icon-button" aria-label="使用说明" title="使用说明"><svg class="icon"><use href="#i-help"/></svg></button>
+    </header>
+    <main id="parryMusic-page" class="music-layout">
+      <section class="library-panel" aria-label="音乐库">
+        <div class="now-playing">
+          <div class="section-label"><span class="status-dot"></span><span id="play-state">等待音乐</span><span class="label-en">NOW PLAYING</span></div>
+          <div class="now-playing-card">
+            <div class="cover-frame"><img id="cover" src="./img/default-cover.svg" alt="默认唱片封面" width="640" height="640"></div>
+            <div class="now-playing-details">
+              <h1 id="track-title">给生活一点旋律</h1>
+              <p id="track-artist" class="track-artist">你的私人音乐空间</p>
+            </div>
+          </div>
+        </div>
+        <div class="library-heading"><h2>我的音乐<span id="track-count">0</span></h2><span class="library-note">随心聆听</span></div>
+        <label class="search-box"><svg class="icon"><use href="#i-search"/></svg><input id="search" type="search" placeholder="搜索歌曲、歌手" aria-label="搜索歌曲或歌手" autocomplete="off"></label>
+        <ol id="playlist" class="playlist" aria-label="播放列表" tabindex="0"></ol>
+        <p id="list-empty" class="list-empty">还没有添加音乐</p>
+      </section>
+      <section class="lyrics-panel" aria-label="歌词">
+        <div class="lyrics-heading"><span class="section-label">歌词</span><span class="lyrics-hint" id="lyrics-hint">让喜欢的声音，陪你一会儿</span></div>
+        <div id="lyrics-scroll" class="lyrics-scroll" role="region" aria-label="歌词滚动区域" tabindex="0">
+          <div id="empty-state" class="empty-state">
+            <span class="empty-caption">YOUR PERSONAL SOUNDTRACK</span>
+            <h2>你的音乐，<br><span>还在路上。</span></h2>
+            <p>这里还没有歌曲。把喜欢的音乐放进 music 目录，<br>在本地生成歌单后，就可以开始聆听。</p>
+            <div class="empty-guide">
+              <span class="step-number">01</span><span>放入喜欢的音乐<small>按「歌手 - 歌名」命名，如「歌手 - 歌名.mp3」，支持子目录。</small></span>
+              <span class="step-number">02</span><span>在本地生成歌单<code>node scripts/generate-playlist.mjs</code><small>自动补全缺失的歌词与封面；添加 --offline 可仅使用本地资源。</small><small>需要调整歌曲顺序？运行 <code>node scripts/order-editor.mjs</code></small></span>
+              <span class="step-number">03</span><span>本地预览，或部署到静态网站<code>node scripts/preview.mjs</code><small>打开 http://localhost:8080/ 预览；也可将网页、歌单与音乐上传到 OSS 等静态托管服务。</small></span>
+            </div>
+            <p class="empty-note">新增、删除或重命名音乐后，请重新生成歌单；已部署的网站还需同步更新资源。</p>
+          </div>
+          <div id="lyrics-content" class="lyrics-content" hidden></div>
+        </div>
+      </section>
+    </main>
+    <footer class="player-bar" aria-label="播放控制">
+      <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+      <div class="progress-row"><time id="current-time">00:00</time><input id="seek" type="range" min="0" max="100" step="0.1" value="0" aria-label="播放进度" aria-valuetext="00:00" disabled><time id="duration">00:00</time></div>
+      <div class="controls-row">
+        <div class="playback-options">
+          <button id="play-mode" class="icon-button play-mode-button" aria-label="顺序播放" title="顺序播放" disabled><svg class="icon"><use id="play-mode-icon" href="#i-order"/></svg><span id="play-mode-one" hidden>1</span></button>
+          <button id="share" class="icon-button" aria-label="复制歌曲链接" title="复制歌曲链接" disabled><svg class="icon"><use href="#i-share"/></svg></button>
+        </div>
+        <div class="transport">
+          <button id="previous" class="icon-button" aria-label="上一曲" title="上一曲（←）" disabled><svg class="icon"><use href="#i-prev"/></svg></button>
+          <button id="play" class="play-button" aria-label="播放" title="播放 / 暂停（空格）" disabled><svg class="icon"><use id="play-icon" href="#i-play"/></svg></button>
+          <button id="next" class="icon-button" aria-label="下一曲" title="下一曲（→）" disabled><svg class="icon"><use href="#i-next"/></svg></button>
+        </div>
+        <div class="volume-controls">
+          <button id="mute" class="icon-button" aria-label="静音" title="静音"><svg class="icon"><use id="volume-icon" href="#i-volume"/></svg></button>
+          <input id="volume" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="音量">
+        </div>
+      </div>
+      <div class="footer-note"><span>音乐，让时间慢下来。</span><span class="keyboard-note">空格 播放 / 暂停 <span>·</span> ← → 切歌</span></div>
+    </footer>
+  </div>
+  <dialog id="help-dialog" aria-labelledby="help-title">
+    <div class="dialog-heading"><h2 id="help-title">ParryMusic · 音乐空间</h2><button id="close-help" class="icon-button" aria-label="关闭说明"><svg class="icon"><use href="#i-close"/></svg></button></div>
+    <p>该网站是纯静态的音乐播放器网站，音乐、网页资源全部存放在OSS上。</p>
+    <p>由于是无后端的音乐播放器，因此只能播放预先存储好的音乐。</p>
+    <p>快捷键：空格播放 / 暂停，← → 上一曲 / 下一曲，↑ ↓ 调整音量。歌词可以点击跳转。浏览器需要你主动点击播放。</p>
+    <p>开源地址：<a href="https://github.com/HuParry/ParryMusic" target="_blank" rel="nofollow noopener">ParryMusic</a></p>
+    <p class="dialog-footnote"><center><a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">湘ICP备2025127872号-1</a></center></p>
+  </dialog>
+  <audio id="audio" preload="metadata"></audio>
+  <dialog id="share-dialog" aria-labelledby="share-title">
+    <div class="dialog-heading"><h2 id="share-title">分享歌曲</h2><button id="close-share" class="icon-button" aria-label="关闭分享"><svg class="icon"><use href="#i-close"/></svg></button></div>
+    <p>未能自动复制，请复制下面的歌曲链接：</p>
+    <input id="share-url" class="share-url" type="text" readonly aria-label="歌曲分享链接">
+  </dialog>
+  <div id="control-tooltip" class="control-tooltip" role="tooltip" hidden></div>
+  <noscript><style>.startup-screen { display: none; } html:not([data-app-state="ready"]) .app-shell { visibility: visible; }</style><div class="noscript-message">请启用浏览器 JavaScript 后使用音乐播放器。</div></noscript>
+</body>
+</html>

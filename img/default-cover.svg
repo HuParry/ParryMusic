@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#28364a"/><stop offset="1" stop-color="#101c2d"/></linearGradient>
+    <radialGradient id="record"><stop stop-color="#303c4b"/><stop offset=".36" stop-color="#111923"/><stop offset="1" stop-color="#1c2736"/></radialGradient>
+    <linearGradient id="label" x2="1" y2="1"><stop stop-color="#b3dcca"/><stop offset="1" stop-color="#629991"/></linearGradient>
+  </defs>
+  <path fill="url(#bg)" d="M0 0h640v640H0z"/>
+  <circle cx="320" cy="300" r="233" fill="url(#record)"/>
+  <g fill="none" stroke="#758397" stroke-opacity=".13">
+    <circle cx="320" cy="300" r="220"/><circle cx="320" cy="300" r="208"/>
+    <circle cx="320" cy="300" r="196"/><circle cx="320" cy="300" r="184"/>
+    <circle cx="320" cy="300" r="172"/><circle cx="320" cy="300" r="160"/>
+    <circle cx="320" cy="300" r="148"/><circle cx="320" cy="300" r="136"/>
+  </g>
+  <circle cx="320" cy="300" r="99" fill="url(#label)"/>
+  <circle cx="320" cy="300" r="8" fill="#182330"/>
+  <g stroke="#182f32" stroke-width="7" stroke-linecap="round">
+    <path d="M283 267v23m18-37v36m19-48v31m19-19v36m18-22v23"/>
+  </g>
+  <text x="320" y="352" text-anchor="middle" fill="#224044" font-family="sans-serif" font-size="16" letter-spacing="5">PARRYMUSIC</text>
+  <text x="320" y="585" text-anchor="middle" fill="#becbd8" font-family="sans-serif" font-size="13" letter-spacing="7">A MOMENT IN MUSIC</text>
+</svg>
