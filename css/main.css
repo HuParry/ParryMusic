@@ -90,6 +90,9 @@ a { color: inherit; }
 .lyrics-panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; border-left: 1px solid var(--line); padding-left: 65px; }
 .lyrics-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; min-height: 17px; }
 .lyrics-hint { font-size: 10px; color: #9aabb8; max-width: 65%; min-width: 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+.lyrics-hint-text { display: inline-block; vertical-align: top; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.lyrics-hint.is-scrolling { text-overflow: clip; }
+.lyrics-hint.is-scrolling .lyrics-hint-text { max-width: none; overflow: visible; }
 .lyrics-scroll { overflow: auto; flex: 1; scrollbar-width: none; position: relative; min-height: 0; overscroll-behavior: contain; }
 .lyrics-scroll::-webkit-scrollbar { display: none; }
 .empty-state { padding-top: clamp(48px, 8vh, 95px); }

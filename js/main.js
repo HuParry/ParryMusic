@@ -41,6 +41,9 @@
   let lyricScrollFrame = 0;
   let lyricScrollTarget = null;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const mobileViewport = window.matchMedia("(max-width: 760px)");
+  let hintAnimation = null;
+  let hintAnimationKey = "";
   const controlTooltip = get("control-tooltip");
   let tooltipButton = null;
   let activeAmbientTone = 0;
@@ -161,6 +164,35 @@
     window.visualViewport.addEventListener("scroll", updateViewport);
   }
   updateViewport();
+
+  function updateLyricsHintMarquee() {
+    const hint = get("lyrics-hint");
+    const text = get("lyrics-hint-text");
+    if (typeof text.animate !== "function") return;
+    const width = hint.clientWidth;
+    const distance = text.scrollWidth - width;
+    const shouldScroll = mobileViewport.matches && !reduceMotion.matches && width > 0 && distance > 1;
+    const key = shouldScroll ? width + ":" + distance + ":" + text.textContent : "";
+    if (key === hintAnimationKey) return;
+    if (hintAnimation) hintAnimation.cancel();
+    hintAnimation = null;
+    hintAnimationKey = key;
+    hint.classList.toggle("is-scrolling", shouldScroll);
+    if (!shouldScroll) return;
+    // Travel at about 20px per second, with a pause at each end.
+    const pause = 1200;
+    const travel = Math.max(1500, distance / 20 * 1000);
+    const duration = 2 * (pause + travel);
+    const start = "translateX(0)";
+    const end = "translateX(-" + distance + "px)";
+    hintAnimation = text.animate([
+      { transform: start, offset: 0 },
+      { transform: start, offset: pause / duration },
+      { transform: end, offset: (pause + travel) / duration },
+      { transform: end, offset: (2 * pause + travel) / duration },
+      { transform: start, offset: 1 }
+    ], { duration: duration, iterations: Infinity, easing: "linear" });
+  }
 
   function setStatus(message) {
     get("status-message").textContent = message;
@@ -486,7 +518,9 @@
     get("ambient-cover").src = track.cover;
     get("empty-state").hidden = true;
     get("lyrics-content").hidden = false;
-    get("lyrics-hint").textContent = track.name + " · " + track.artist;
+    get("lyrics-hint-text").textContent = track.name + " · " + track.artist;
+    get("lyrics-hint").title = track.name + " · " + track.artist;
+    updateLyricsHintMarquee();
     document.title = track.name + " - " + track.artist + " | " + siteTitle;
     setStatus("");
     updateTrackSelection();
@@ -670,6 +704,14 @@
     onSeek: function () { manualScrollUntil = 0; updateLyrics(true); savePlayback(true); }
   });
   initializeControlTooltips();
+  window.addEventListener("resize", updateLyricsHintMarquee);
+  if (reduceMotion.addEventListener) reduceMotion.addEventListener("change", updateLyricsHintMarquee);
+  if (typeof window.ResizeObserver === "function") {
+    const observer = new window.ResizeObserver(updateLyricsHintMarquee);
+    observer.observe(get("lyrics-hint"));
+    observer.observe(get("lyrics-hint-text"));
+  }
+  if (document.fonts) document.fonts.ready.then(updateLyricsHintMarquee);
   get("site-title").textContent = siteTitle;
   get("site-subtitle").textContent = typeof config.subtitle === "string" ? config.subtitle : "用音乐，留住片刻。";
   document.title = siteTitle + " - " + get("site-subtitle").textContent;
