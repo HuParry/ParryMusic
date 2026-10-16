@@ -56,7 +56,9 @@
     const minimum = Math.min.apply(null, source);
     const delta = maximum - minimum;
     const lightness = (maximum + minimum) / 2;
-    const saturation = delta ? delta / (1 - Math.abs(2 * lightness - 1)) : 0;
+    // Lifting near-black RGB values can exaggerate tiny channel differences.
+    // Treat very dark or nearly neutral samples as gray rather than tinting them.
+    const saturation = maximum >= 18 / 255 && delta >= 6 / 255 ? delta / (1 - Math.abs(2 * lightness - 1)) : 0;
     let hue = 0;
     if (delta) {
       if (maximum === source[0]) hue = (source[1] - source[2]) / delta;

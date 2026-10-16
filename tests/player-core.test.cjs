@@ -137,3 +137,17 @@ test("cover colour sampling favours a representative saturated colour and builds
     base: "rgb(30, 43, 51)"
   });
 });
+
+test("near-black covers and subtle gray colour casts produce neutral backgrounds", function () {
+  for (const color of [[0, 0, 0], [2, 4, 3], [0, 1, 0], [12, 1, 8], [100, 102, 101]]) {
+    const pixels = Uint8ClampedArray.from(Array.from({ length: 36 }, () => [...color, 255]).flat());
+    const palette = core.ambientPalette(core.dominantColor(pixels));
+    for (const tone of Object.values(palette)) {
+      const [red, green, blue] = tone.match(/\d+/g).map(Number);
+      assert.equal(red, green, "Unexpected colour cast for " + color);
+      assert.equal(green, blue, "Unexpected colour cast for " + color);
+    }
+  }
+  const green = core.ambientPalette([24, 100, 40]).base.match(/\d+/g).map(Number);
+  assert.ok(green[1] > green[0] && green[1] > green[2]);
+});
