@@ -128,6 +128,12 @@ input[type="range"]::-moz-range-thumb { width: 10px; height: 10px; border: 0; bo
 #seek::-webkit-slider-runnable-track { height: 4px; background: transparent; border: 0; }
 #seek::-webkit-slider-thumb { margin-top: -3px; }
 #seek::-moz-range-track, #seek::-moz-range-progress { height: 4px; background: transparent; border: 0; }
+@media (hover: hover) and (pointer: fine) {
+  /* Expand the mouse target while keeping the track and row spacing unchanged. */
+  #seek { height: 16px; margin-block: -4px; background: transparent; }
+  #seek::-webkit-slider-runnable-track { border-radius: 4px; background: linear-gradient(to right, var(--accent) var(--progress), #ffffff1a var(--progress)); }
+  #seek::-moz-range-track { border-radius: 4px; background: linear-gradient(to right, var(--accent) var(--progress), #ffffff1a var(--progress)); }
+}
 .controls-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; column-gap: 22px; margin-top: var(--controls-top); }
 .playback-options, .volume-controls, .transport { display: flex; align-items: center; gap: 8px; }
 .playback-options { justify-content: flex-end; }
